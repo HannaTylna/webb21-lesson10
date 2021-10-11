@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <ul id="messageList">
+
+        </ul>
+        <div>
+            <div>
+                <label for="author" style="margin: 10px;">Author </label>
+                <input id="author" size="24" style="margin: 20px; padding: auto; border-radius: 7px; border-color: blueviolet;" />
+            </div>
+
+            <div>
+                <label for="message" style="margin: 10px;">Message </label>
+                <textarea id="message" rows="4" cols="20" style="margin: 10px; padding: auto; border-radius: 7px; border-color: blueviolet;"></textarea>
+            </div>
+
+            <div>
+                <label for="receiver" style="margin: 10px;">Receiver </label>
+                <input id="receiver" size="24" style="margin: 10px; padding: auto; border-radius: 7px; border-color: blueviolet;"/>
+                
+            </div>
+            <div>
+                <button onclick="handleOnClick()" >Send</button>
+                <button onclick="getMessageList()">Refresh</button>
+            </div>
+            
+        </div>
+        <script>
+            /* const username = 'hanna' // Add a generic username here */
+            const url = "https://mock-data-api.firebaseio.com/webb21-chats/hanna/messages.json"
+            const messageListContainer = document.getElementById("messageList");
+
+            function getURL(){
+
+                const username = document.getElementById("receiver").value;   
+                const url = `https://mock-data-api.firebaseio.com/webb21-chats/${username}/messages.json`;
+                
+                return url
+            }
+            
+            function handleOnClick() {
+                const author = document.getElementById("author").value;
+                const message = document.getElementById("message").value;
+
+                sendMessage(author, message)
+            }
+
+            function sendMessage(author, message) {
+                /* messageListContainer.innerHTML = "" */
+                const payload = {
+                    author: author,
+                    message: message
+                }
+                console.log(payload);
+                fetch(getURL(), {
+                    method:'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                })
+                .then(res => {
+                    getMessageList() 
+                })
+            }
+
+            function renderMessageItem(messageItem) {
+                messageListContainer.innerHTML += `<li>${messageItem.author}: ${messageItem.message}</li>`
+            }
+
+            function renderMessageList(data) {
+                messageListContainer.innerHTML = "";
+                Object.entries(data).forEach(item => {
+                    console.log(item);
+                    const messageItem = item[1];
+                    renderMessageItem(messageItem)
+                })
+            }
+
+            function getMessageList() {
+                fetch(url)
+                .then(res => res.json())
+                .then(data =>{
+                    renderMessageList(data)
+                })
+            }
+
+            getMessageList()
+
+        </script>
+    </body>
+</html>
