@@ -12,14 +12,39 @@
             const chatURL = "https://mock-data-api.firebaseio.com/webb21-chats.json";
             const chatListContainer = document.getElementById("chatList")
 
-            function getChatList(){
+            function renderMessages(data){
+                Object.entries(data).forEach(item => {
+                    for(let key in item){
+                        console.log(item[key])
+                    }
+                    /* renderMessagesItem(item); */
+                })
+            }
+
+            function getMessages(url){
                 chatListContainer.innerHTML = ""
-                fetch(chatURL)
+                fetch(url)
                 .then(res => res.json())
                 .then(data => {
                     /* console.log(data) */
-                    renderChatList(data)
+                    renderMessages(data)
                 })
+            }
+
+            function renderChatItem(item) {
+                const chat = document.createElement('p');
+
+                if (item[0][0] === '-'){
+                    chat.innerText = `${item[1].author}:  ${item[1].message}`;
+                } else {
+                    const username = `${item[0]}`
+                    const url = `https://mock-data-api.firebaseio.com/webb21-chats/${username}/messages.json`;
+                    
+                    getMessages(url)
+                } 
+                
+                chatListContainer.appendChild(chat);
+                /* getChatMessages(url); */
             }
 
             function renderChatList(data){
@@ -34,30 +59,21 @@
                 })
             }
 
-            function renderChatItem(item) {
-                const chat = document.createElement('p');
-                if (item[0][0] === '-'){
-                    chat.innerText = `${item[1].author}:  ${item[1].message}`;
-                } else {
-                    const username = `${item[0]}`
-                    const url = `https://mock-data-api.firebaseio.com/webb21-chats/${username}/messages.json`;
-                    
-                    return url
-                } 
-                
-                chatListContainer.appendChild(chat)              
-            }
-
-            function getChatMessages(){
+            function getChatList(){
                 chatListContainer.innerHTML = ""
-                fetch(url)
+                fetch(chatURL)
                 .then(res => res.json())
                 .then(data => {
+                    /* console.log(data) */
                     renderChatList(data)
                 })
             }
 
-            function renderChatMessages(data){
+            /* 
+
+            
+ */
+            /* function renderChatMessages(data){
                 Object.entries(data).forEach(item => {
                     for(let key in item){
                         console.log(item[key])
@@ -72,7 +88,7 @@
                     chat.innerText = `${item[1].author}:  ${item[1].message}`;
                 }
                 chatListContainer.appendChild(chat)                 
-            }
+            } */
 
             getChatList()
         </script>
