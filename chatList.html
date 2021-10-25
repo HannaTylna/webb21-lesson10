@@ -4,13 +4,13 @@
         
     </head>
     <body>
-        <div id="chatList">
-
-        </div>
+        <div id="chatList"></div>
+        <div id="messageList"></div>
         
         <script>
             const chatURL = "https://mock-data-api.firebaseio.com/webb21-chats.json";
-            const chatListContainer = document.getElementById("chatList")
+            const chatListContainer = document.getElementById("chatList");
+            const messageListContainer = document.getElementById("messageList");
 
             function renderMessages(data){
                 Object.entries(data).forEach(item => {
@@ -19,6 +19,7 @@
                     }
                     /* renderMessagesItem(item); */
                 })
+                
             }
 
             function getMessages(url){
@@ -32,18 +33,24 @@
             }
 
             function renderChatItem(item) {
-                const chat = document.createElement('p');
+                
 
                 if (item[0][0] === '-'){
+                    const chat = document.createElement('p');
                     chat.innerText = `${item[1].author}:  ${item[1].message}`;
+                    chatListContainer.appendChild(chat);
+                
                 } else {
-                    const username = `${item[0]}`
-                    const url = `https://mock-data-api.firebaseio.com/webb21-chats/${username}/messages.json`;
+                    
+                    const url = `https://mock-data-api.firebaseio.com/webb21-chats/${item[0]}/messages.json`;
                     
                     getMessages(url)
+                    const message = document.createElement("p");
+                    message.innerText += `${item[0]}: ${item[1].message}`;
+                    messageListContainer.appendChild(message)
                 } 
                 
-                chatListContainer.appendChild(chat);
+                
                 /* getChatMessages(url); */
             }
 
